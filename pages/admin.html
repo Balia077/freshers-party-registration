@@ -376,6 +376,10 @@
 
       sortedDepts.forEach(dept => {
         const deptStudents = departments[dept];
+        
+        // Skip department if no students
+        if (deptStudents.length === 0) return;
+        
         const males = deptStudents.filter(s => s.gender === 'Male');
         const females = deptStudents.filter(s => s.gender === 'Female');
 
@@ -390,6 +394,7 @@
           <h3 style="color: var(--primary); margin: 20px 0 15px 0; font-size: 1.3rem;">
             ♂️ Male Students (${males.length})
           </h3>
+          ${males.length > 0 ? `
           <div class="table-wrapper">
             <table>
               <thead>
@@ -401,24 +406,23 @@
                 </tr>
               </thead>
               <tbody>
-                ${males.length > 0 
-                  ? males.map((s, i) => `
-                    <tr>
-                      <td>${i + 1}</td>
-                      <td>${s.name}</td>
-                      <td>${s.email}</td>
-                      <td>${s.phone}</td>
-                    </tr>
-                  `).join('')
-                  : '<tr><td colspan="4" class="empty-message">No male students in this department</td></tr>'
-                }
+                ${males.map((s, i) => `
+                  <tr>
+                    <td>${i + 1}</td>
+                    <td>${s.name}</td>
+                    <td>${s.email}</td>
+                    <td>${s.phone}</td>
+                  </tr>
+                `).join('')}
               </tbody>
             </table>
           </div>
+          ` : '<p style="color: var(--gray); font-style: italic; margin-bottom: 20px;">No male students registered yet</p>'}
 
           <h3 style="color: var(--secondary); margin: 20px 0 15px 0; font-size: 1.3rem;">
             ♀️ Female Students (${females.length})
           </h3>
+          ${females.length > 0 ? `
           <div class="table-wrapper">
             <table>
               <thead>
@@ -430,20 +434,18 @@
                 </tr>
               </thead>
               <tbody>
-                ${females.length > 0 
-                  ? females.map((s, i) => `
-                    <tr>
-                      <td>${i + 1}</td>
-                      <td>${s.name}</td>
-                      <td>${s.email}</td>
-                      <td>${s.phone}</td>
-                    </tr>
-                  `).join('')
-                  : '<tr><td colspan="4" class="empty-message">No female students in this department</td></tr>'
-                }
+                ${females.map((s, i) => `
+                  <tr>
+                    <td>${i + 1}</td>
+                    <td>${s.name}</td>
+                    <td>${s.email}</td>
+                    <td>${s.phone}</td>
+                  </tr>
+                `).join('')}
               </tbody>
             </table>
           </div>
+          ` : '<p style="color: var(--gray); font-style: italic; margin-bottom: 20px;">No female students registered yet</p>'}
         `;
 
         container.appendChild(deptSection);
