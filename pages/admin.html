@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="favicon_io (1)/favicon-32x32.png">
   <title>Admin Panel: Registered Students</title>
   <style>
     :root {
@@ -90,7 +89,7 @@
 
     .stats-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 25px;
       margin-bottom: 40px;
     }
@@ -114,27 +113,56 @@
       opacity: 0.95;
     }
 
-    .section-title {
+    .department-section {
+      margin-bottom: 60px;
+    }
+
+    .department-header {
       color: var(--primary);
-      font-size: 2rem;
+      font-size: 1.8rem;
       margin: 40px 0 25px 0;
       display: flex;
       align-items: center;
       gap: 15px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid var(--primary);
     }
 
-    .student-count {
+    .department-count {
       background: #f59e0b;
       color: white;
       padding: 8px 20px;
       border-radius: 50px;
       font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .gender-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .gender-tab {
+      padding: 10px 20px;
+      background: #f3f4f6;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .gender-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
     .table-wrapper {
       overflow-x: auto;
       border-radius: 15px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
 
     table {
@@ -152,6 +180,7 @@
       padding: 18px 12px;
       font-weight: 700;
       text-transform: uppercase;
+      font-size: 0.9rem;
     }
 
     tbody td {
@@ -187,6 +216,7 @@
       cursor: pointer;
       font-weight: 600;
       margin-bottom: 20px;
+      margin-right: 10px;
     }
 
     .export-btn:hover {
@@ -199,6 +229,35 @@
       text-align: center;
       padding: 40px 20px;
       margin-top: 80px;
+    }
+
+    @media (max-width: 768px) {
+      section {
+        padding: 20px;
+      }
+
+      .department-header {
+        font-size: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .stat-card {
+        padding: 20px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+
+      thead th {
+        font-size: 0.8rem;
+        padding: 12px 8px;
+      }
+
+      tbody td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -216,47 +275,11 @@
       ✅ Welcome, Admin! Here are the registered student details
     </div>
 
-    <button class="export-btn" onclick="exportToCSV()">📥 Export to CSV</button>
+    <button class="export-btn" onclick="exportToCSV()">📥 Export All to CSV</button>
 
     <div class="stats-container" id="statsContainer"></div>
 
-    <h2 class="section-title">
-      ♂️ Male Students
-      <span class="student-count" id="maleCount">0</span>
-    </h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Sl. No.</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Department</th>
-          </tr>
-        </thead>
-        <tbody id="maleTableBody"></tbody>
-      </table>
-    </div>
-
-    <h2 class="section-title">
-      ♀️ Female Students
-      <span class="student-count" id="femaleCount">0</span>
-    </h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Sl. No.</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Department</th>
-          </tr>
-        </thead>
-        <tbody id="femaleTableBody"></tbody>
-      </table>
-    </div>
+    <div id="departmentContainer"></div>
   </section>
 
   <footer>
@@ -276,11 +299,8 @@
     }
 
     async function loadStudents() {
-      const maleTable = document.getElementById('maleTableBody');
-      const femaleTable = document.getElementById('femaleTableBody');
-      
-      maleTable.innerHTML = '<tr><td colspan="5" class="loading">Loading data...</td></tr>';
-      femaleTable.innerHTML = '<tr><td colspan="5" class="loading">Loading data...</td></tr>';
+      const container = document.getElementById('departmentContainer');
+      container.innerHTML = '<div class="loading">Loading data...</div>';
 
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL);
@@ -293,48 +313,42 @@
           throw new Error(result.error);
         }
       } catch (error) {
-        maleTable.innerHTML = `<tr><td colspan="5" class="empty-message">Error loading data: ${error.message}</td></tr>`;
-        femaleTable.innerHTML = `<tr><td colspan="5" class="empty-message">Error loading data</td></tr>`;
+        container.innerHTML = `<div class="empty-message">Error loading data: ${error.message}</div>`;
       }
     }
 
     function displayStudents() {
-      const maleTable = document.getElementById('maleTableBody');
-      const femaleTable = document.getElementById('femaleTableBody');
-      const maleCount = document.getElementById('maleCount');
-      const femaleCount = document.getElementById('femaleCount');
+      const container = document.getElementById('departmentContainer');
       const statsContainer = document.getElementById('statsContainer');
 
-      maleTable.innerHTML = '';
-      femaleTable.innerHTML = '';
-
       if (!allStudents.length) {
-        maleTable.innerHTML = '<tr><td colspan="5" class="empty-message">No registrations yet</td></tr>';
-        femaleTable.innerHTML = '<tr><td colspan="5" class="empty-message">No registrations yet</td></tr>';
+        container.innerHTML = '<div class="empty-message">No registrations yet</div>';
         statsContainer.innerHTML = `
           <div class="stat-card">
             <div class="stat-label">Total Registrations</div>
-            <div class="stat-number">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Male Students</div>
-            <div class="stat-number">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Female Students</div>
             <div class="stat-number">0</div>
           </div>
         `;
         return;
       }
 
+      // Sort students alphabetically by name
       const sorted = allStudents.sort((a, b) => a.name.localeCompare(b.name));
-      const males = sorted.filter(s => s.gender === 'Male');
-      const females = sorted.filter(s => s.gender === 'Female');
 
-      maleCount.textContent = males.length;
-      femaleCount.textContent = females.length;
+      // Group by department
+      const departments = {};
+      sorted.forEach(student => {
+        if (!departments[student.department]) {
+          departments[student.department] = [];
+        }
+        departments[student.department].push(student);
+      });
 
+      // Calculate stats
+      const maleCount = sorted.filter(s => s.gender === 'Male').length;
+      const femaleCount = sorted.filter(s => s.gender === 'Female').length;
+
+      // Display stats
       statsContainer.innerHTML = `
         <div class="stat-card">
           <div class="stat-label">Total Registrations</div>
@@ -342,35 +356,98 @@
         </div>
         <div class="stat-card">
           <div class="stat-label">Male Students</div>
-          <div class="stat-number">${males.length}</div>
+          <div class="stat-number">${maleCount}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Female Students</div>
-          <div class="stat-number">${females.length}</div>
+          <div class="stat-number">${femaleCount}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Departments</div>
+          <div class="stat-number">${Object.keys(departments).length}</div>
         </div>
       `;
 
-      const renderRows = (list, tableBody) => {
-        if (list.length === 0) {
-          tableBody.innerHTML = '<tr><td colspan="5" class="empty-message">No registrations in this category</td></tr>';
-          return;
-        }
+      // Display tables for each department
+      container.innerHTML = '';
+      
+      // Sort departments alphabetically
+      const sortedDepts = Object.keys(departments).sort();
 
-        list.forEach((s, i) => {
-          const row = `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${s.name}</td>
-              <td>${s.email}</td>
-              <td>${s.phone}</td>
-              <td>${s.department}</td>
-            </tr>`;
-          tableBody.innerHTML += row;
-        });
-      };
+      sortedDepts.forEach(dept => {
+        const deptStudents = departments[dept];
+        const males = deptStudents.filter(s => s.gender === 'Male');
+        const females = deptStudents.filter(s => s.gender === 'Female');
 
-      renderRows(males, maleTable);
-      renderRows(females, femaleTable);
+        const deptSection = document.createElement('div');
+        deptSection.className = 'department-section';
+        deptSection.innerHTML = `
+          <h2 class="department-header">
+            🎓 ${dept}
+            <span class="department-count">${deptStudents.length} Students</span>
+          </h2>
+
+          <h3 style="color: var(--primary); margin: 20px 0 15px 0; font-size: 1.3rem;">
+            ♂️ Male Students (${males.length})
+          </h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sl. No.</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${males.length > 0 
+                  ? males.map((s, i) => `
+                    <tr>
+                      <td>${i + 1}</td>
+                      <td>${s.name}</td>
+                      <td>${s.email}</td>
+                      <td>${s.phone}</td>
+                    </tr>
+                  `).join('')
+                  : '<tr><td colspan="4" class="empty-message">No male students in this department</td></tr>'
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="color: var(--secondary); margin: 20px 0 15px 0; font-size: 1.3rem;">
+            ♀️ Female Students (${females.length})
+          </h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sl. No.</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${females.length > 0 
+                  ? females.map((s, i) => `
+                    <tr>
+                      <td>${i + 1}</td>
+                      <td>${s.name}</td>
+                      <td>${s.email}</td>
+                      <td>${s.phone}</td>
+                    </tr>
+                  `).join('')
+                  : '<tr><td colspan="4" class="empty-message">No female students in this department</td></tr>'
+                }
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        container.appendChild(deptSection);
+      });
     }
 
     function exportToCSV() {
