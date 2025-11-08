@@ -3,18 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="favicon_io (1)/favicon-32x32.png">
   <title>Admin Login</title>
   <style>
-       :root {
+    :root {
       --primary: #6366f1;
       --primary-dark: #4f46e5;
-      --primary-light: #818cf8;
       --secondary: #ec4899;
-      --accent: #f59e0b;
-      --success: #10b981;
       --danger: #ef4444;
       --dark: #1f2937;
+      --success: #10b981;
       --light: #f9fafb;
       --gray: #6b7280;
     }
@@ -31,18 +28,18 @@
       color: var(--dark);
       line-height: 1.6;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       color: white;
-      padding: 0 !important;
-      text-align: center;
+      padding: 0;
       box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
       position: sticky;
       top: 0;
       z-index: 1000;
-      backdrop-filter: blur(10px);
     }
 
     .header-content {
@@ -61,24 +58,6 @@
       text-decoration: none;
       color: white;
       letter-spacing: 1px;
-      animation: slideInLeft 0.6s ease;
-    }
-
-    .logo:hover {
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
-      transform: scale(1.05);
-      transition: 0.3s;
-    }
-
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
     }
 
     nav {
@@ -92,31 +71,12 @@
       text-decoration: none;
       font-size: 1rem;
       font-weight: 600;
-      position: relative;
       transition: 0.3s;
       padding: 8px 0;
-      animation: fadeIn 0.8s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 3px;
-      background: white;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 2px;
-    }
-
-    nav a:hover::after {
-      width: 100%;
+    nav a:hover {
+      opacity: 0.8;
     }
 
     .nav-toggle {
@@ -132,25 +92,6 @@
       background: white;
       border-radius: 2px;
       transition: 0.3s;
-    }
-
-    .nav-toggle.active span:nth-child(1) {
-      transform: rotate(45deg) translate(10px, 10px);
-    }
-
-    .nav-toggle.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .nav-toggle.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(8px, -8px);
-    }
-    /* --- Admin Login Page Specific Styling --- */
-    body {
-      background: linear-gradient(135deg, #f0f5ff 0%, #e3eaf2 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
     main {
@@ -215,7 +156,6 @@
       color: #333;
       font-weight: 600;
       font-size: 0.95rem;
-      letter-spacing: 0.3px;
     }
 
     input[type="text"],
@@ -227,39 +167,14 @@
       font-size: 1rem;
       font-family: inherit;
       transition: all 0.3s ease;
-      box-sizing: border-box;
       background: #f8f9fa;
     }
 
-    input[type="text"]::placeholder,
-    input[type="password"]::placeholder {
-      color: #bbb;
-    }
-
-    input[type="text"]:focus,
-    input[type="password"]:focus {
+    input:focus {
       outline: none;
       border-color: #004aad;
       background: white;
       box-shadow: 0 0 0 4px rgba(0, 74, 173, 0.1);
-    }
-
-    .input-group {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-icon {
-      position: absolute;
-      right: 15px;
-      font-size: 1.2rem;
-      color: #999;
-      pointer-events: none;
-    }
-
-    .form-group input {
-      padding-right: 45px;
     }
 
     .login-btn {
@@ -274,17 +189,17 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 16px rgba(0, 74, 173, 0.2);
-      letter-spacing: 0.5px;
       margin-top: 10px;
     }
 
-    .login-btn:hover {
+    .login-btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 24px rgba(0, 74, 173, 0.3);
     }
 
-    .login-btn:active {
-      transform: translateY(0);
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .security-info {
@@ -298,10 +213,6 @@
       line-height: 1.6;
     }
 
-    .security-info strong {
-      color: #b45309;
-    }
-
     .error-message {
       display: none;
       background: #f8d7da;
@@ -312,34 +223,6 @@
       border-left: 4px solid #e63946;
       text-align: center;
       font-weight: 600;
-      animation: shake 0.4s ease;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 25px 0;
-      color: #ccc;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e0e0e0;
-    }
-
-    .divider-text {
-      padding: 0 10px;
-      color: #999;
-      font-size: 0.85rem;
     }
 
     .back-link {
@@ -352,12 +235,6 @@
       text-decoration: none;
       font-weight: 500;
       transition: 0.3s;
-      font-size: 0.95rem;
-    }
-
-    .back-link a:hover {
-      text-decoration: underline;
-      color: #0366d6;
     }
 
     footer {
@@ -365,8 +242,7 @@
       color: white;
       text-align: center;
       padding: 40px 20px;
-      margin-top: 80px;
-      animation: slideUp 0.8s ease;
+      margin-top: auto;
     }
 
     footer p {
@@ -374,7 +250,6 @@
       font-weight: 500;
     }
 
-    /* Mobile Responsive */
     @media (max-width: 768px) {
       .header-content {
         padding: 15px 20px;
@@ -388,54 +263,31 @@
         display: flex;
       }
 
-     nav {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    flex-direction: column;
-    gap: 0;
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    z-index: 999;
-  }
-
-  nav.active {
-    max-height: 200px;
-  }
-
-  nav a {
-    padding: 12px 20px;
-    text-align: left;
-    border-bottom: none;
-    display: block;
-    font-size: 0.9rem;
-  }
-      nav a::after {
-        display: none;
+      nav {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
       }
 
-      nav a:hover {
-        background: rgba(255,255,255,0.1);
+      nav.active {
+        max-height: 200px;
       }
 
-      main {
-        padding: 20px 10px;
+      nav a {
+        padding: 12px 20px;
+        display: block;
       }
 
       section {
         padding: 40px 25px;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .login-icon {
-        font-size: 3rem;
       }
     }
   </style>
@@ -470,7 +322,7 @@
       </div>
 
       <div class="security-info">
-        <strong>🔒 Secure Access:</strong> Only authorized administrators can access this panel. Please use your credentials carefully.
+        <strong>🔒 Secure Access:</strong> All login attempts are monitored and logged for security purposes.
       </div>
 
       <div class="error-message" id="errorMsg">
@@ -480,40 +332,30 @@
       <form id="adminForm">
         <div class="form-group">
           <label for="username">Username</label>
-          <div class="input-group">
-            <input 
-              type="text" 
-              id="username" 
-              name="username" 
-              placeholder="Enter your username"
-              autocomplete="off"
-              required
-            >
-            <span class="input-icon">👤</span>
-          </div>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            placeholder="Enter your username"
+            autocomplete="off"
+            required
+          >
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <div class="input-group">
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
-              placeholder="Enter your password"
-              autocomplete="off"
-              required
-            >
-            <span class="input-icon">🔑</span>
-          </div>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter your password"
+            autocomplete="off"
+            required
+          >
         </div>
 
-        <button type="submit" class="login-btn">🔓 Login</button>
+        <button type="submit" class="login-btn" id="loginBtn">🔓 Login</button>
       </form>
-
-      <div class="divider">
-        <span class="divider-text">or</span>
-      </div>
 
       <div class="back-link">
         <a href="../index.html">← Back to Home</a>
@@ -528,7 +370,8 @@
   </footer>
 
   <script>
-    // Mobile menu toggle
+    const MONITORING_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJekG2tdEXWu6UraCb0pJwKYNfh0WrqBro7dhJRO4koAIuatWBJhJXWjUDvGXye2Ah/?action=monitor";
+
     const navToggle = document.getElementById('navToggle');
     const navbar = document.getElementById('navbar');
 
@@ -537,7 +380,6 @@
       navbar.classList.toggle('active');
     });
 
-    // Close menu when link is clicked
     document.querySelectorAll('nav a').forEach(link => {
       link.addEventListener('click', () => {
         navToggle.classList.remove('active');
@@ -545,29 +387,59 @@
       });
     });
 
-    // Admin login form
-    document.getElementById('adminForm').onsubmit = function(e) {
+    document.getElementById('adminForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
       const errorMsg = document.getElementById('errorMsg');
+      const loginBtn = document.getElementById('loginBtn');
 
- if ((username === 'biswaranjan2005' && password === '9337718870') || 
-    (username === 'balaram2006' && password === '7377321480')) {
-    localStorage.setItem('adminLoggedIn', 'true');
-    errorMsg.style.display = 'none';
-    this.style.opacity = '0.5';
-    setTimeout(() => {
-        window.location.href = 'admin.html';
-    }, 500);
-      } else {
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Verifying...';
+      errorMsg.style.display = 'none';
+
+      try {
+        const response = await fetch(MONITORING_SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'verify_admin',
+            username: username,
+            password: password
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Store session info
+          sessionStorage.setItem('adminLoggedIn', 'true');
+          sessionStorage.setItem('adminName', result.data.adminName);
+          sessionStorage.setItem('sessionId', result.data.sessionId);
+          
+          errorMsg.style.display = 'none';
+          this.style.opacity = '0.5';
+          
+          setTimeout(() => {
+            window.location.href = 'admin.html';
+          }, 500);
+        } else {
+          errorMsg.textContent = '❌ Invalid username or password';
+          errorMsg.style.display = 'block';
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+      } catch (error) {
+        errorMsg.textContent = '❌ Error: ' + error.message;
         errorMsg.style.display = 'block';
-        document.getElementById('password').value = '';
-        document.getElementById('password').focus();
+        console.error('Login error:', error);
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = '🔓 Login';
       }
-    };
+    });
 
-    // Clear error message when user starts typing
+    // Clear error on input
     document.getElementById('username').addEventListener('input', () => {
       document.getElementById('errorMsg').style.display = 'none';
     });
@@ -577,5 +449,4 @@
     });
   </script>
 </body>
-
 </html>
